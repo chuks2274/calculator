@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Professional Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- === Outer Wrapper === -->
+  <div class="wrap">
+    <!-- Main calculator container -->
+    <div class="calculator" role="application" aria-label="Professional Calculator">
+
+      <!-- === Display Section === -->
+      <div class="screen">
+        <!-- Header Row (Title + Theme Controls) -->
+        <div class="toprow">
+          <div>
+            <div class="title">Professional Calculator</div>
+            <div class="small">Precision math, keyboard friendly</div>
+          </div>
+          <div class="controls">
+            <button id="copyBtn" class="theme-toggle small">Copy</button>
+            <button id="themeBtn" class="theme-toggle small" aria-pressed="false">Light</button>
+          </div>
+        </div>
+
+        <!-- Display area -->
+        <div class="display" id="display" tabindex="0" aria-live="polite">
+          <div class="expression" id="expression">0</div>
+          <div class="result" id="result">0</div>
+        </div>
+
+        <!-- === Keypad Section === -->
+        <div class="pad" role="grid" aria-label="Calculator keypad">
+          <!-- Top row -->
+          <button class="btn control" data-action="clear">AC</button>  
+          <button class="btn control" data-action="back">⌫</button>    
+          <button class="btn control" data-action="paren">( )</button>  
+          <button class="btn operator" data-value="/">÷</button>       
+
+          <!-- Number row 7 8 9 -->
+          <button class="btn" data-value="7">7</button>
+          <button class="btn" data-value="8">8</button>
+          <button class="btn" data-value="9">9</button>
+          <button class="btn operator" data-value="*">×</button>        
+
+          <!-- Number row 4 5 6 -->
+          <button class="btn" data-value="4">4</button>
+          <button class="btn" data-value="5">5</button>
+          <button class="btn" data-value="6">6</button>
+          <button class="btn operator" data-value="-">−</button>        
+
+          <!-- Number row 1 2 3 -->
+          <button class="btn" data-value="1">1</button>
+          <button class="btn" data-value="2">2</button>
+          <button class="btn" data-value="3">3</button>
+          <button class="btn operator" data-value="+">+</button>        
+
+          <!-- Bottom row -->
+          <button class="btn" data-value="0">0</button>
+          <button class="btn" data-value=".">.</button>                 
+          <button class="btn control" data-action="percent">%</button>    
+          <button class="btn equal" data-action="calculate">=</button>  
+
+          <!-- Additional function buttons -->
+          <button class="btn control" data-action="sqrt">√</button>     
+          <button class="btn control" data-action="pow">x²</button>     
+          <button class="btn control" data-action="inv">1/x</button>    
+          <button class="btn control" data-action="neg">±</button>      
+        </div>
+      </div>
+
+      <!-- === Sidebar Section === -->
+      <div class="side">
+        <div class="history" id="history" aria-live="polite">
+          <h4>History</h4>
+          <div class="history-list" id="historyList"></div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button id="memPlus" class="btn" data-action="memPlus">M+</button>
+          <button id="memRecall" class="btn" data-action="memRecall">MR</button>
+          <button id="memClear" class="btn" data-action="memClear">MC</button>
+          <button id="clearHistory" class="btn control" data-action="clearHistory">Clear History</button>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer>
+        Built with HTML • CSS • JavaScript — Supports keyboard input, parentheses, and operator precedence
+      </footer>
+    </div>
+  </div>
+
+  <!-- External JS -->
+  <script src="script.js"></script>
+</body>
+</html>
