@@ -1,297 +1,340 @@
-(function () {
-  // -------------------------
-  // Get DOM elements
-  // -------------------------
-  const expressionEl = document.getElementById("expression"); // main expression display
-  const resultEl = document.getElementById("result"); // calculation result display
-  const historyList = document.getElementById("historyList"); // history container
+// Calculator module for browser and Jest testing
+// This file contains core calculator logic, DOM interactions (for browsers), 
+// and exports for testing with Jest.
 
-  // -------------------------
-  // State variables
-  // -------------------------
-  let expr = ""; // current expression string
-  let mem = 0; // memory storage
-  let history = []; // array of previous calculations
-  let pendingNegative = false; // flag: next number should be negative
+// -------------------------
+// DOM elements (optional for Jest)
+// -------------------------
+// `expressionEl` is the DOM element showing the current expression. Null if not in browser (e.g., Jest).
+const expressionEl = typeof document !== "undefined" ? document.getElementById("expression") : null;
 
-  // -------------------------
-  // Update expression and result display
-  // -------------------------
-  function updateDisplay() {
-    expressionEl.textContent = expr || "0"; // show 0 if empty
-    try {
-      // skip if expression is empty or ends with operator
-      if (!expr || /[+\-*/^%]$/.test(expr)) {
-        resultEl.textContent = "";
-        return;
+// `resultEl` shows the evaluated result. Null if not in browser.
+const resultEl = typeof document !== "undefined" ? document.getElementById("result") : null;
+
+// `historyList` is the container for previous calculations. Null if not in browser.
+const historyList = typeof document !== "undefined" ? document.getElementById("historyList") : null;
+
+
+// -------------------------
+// State
+// -------------------------
+// `expr` holds the current mathematical expression as a string.
+let expr = "";
+
+// `mem` holds the calculator memory value for M+, MR, MC functionality.
+let mem = 0;
+
+// `history` stores previous expressions/results, up to 20 entries.
+let history = [];
+
+// `pendingNegative` is true if the next number should be treated as negative.
+let pendingNegative = false;
+
+
+// -------------------------
+// Update display safely
+// -------------------------
+// Update expression display, default to "0" if empty.
+function updateDisplay() {
+  if (expressionEl) expressionEl.textContent = expr || "0";
+  
+   // If no result element exists, stop here (e.g., Jest testing).
+  if (!resultEl) return;
+  
+  // Count opening and closing parentheses to check for completeness.
+  const open = (expr.match(/\(/g) || []).length;
+  const close = (expr.match(/\)/g) || []).length;
+  
+
+  // Don't evaluate if incomplete
+  if (!expr || /[+\-*/^%]$/.test(expr) || open > close) {
+    resultEl.textContent = "";
+    return;
+  }
+  // Safely evaluate expression and show result. Show empty if invalid.
+  try {
+    const val = evaluateExpression(expr);
+    resultEl.textContent = isNaN(val) ? "" : String(val);
+  } catch {
+    resultEl.textContent = "";
+  }
+}
+
+// -------------------------
+// History
+// -------------------------
+// Add new history item to the start (most recent first).
+function pushHistory(item) {
+  history.unshift(item);
+  
+  // Keep history size at max 20 items.
+  if (history.length > 20) history.pop();
+  
+  // Refresh DOM history list
+  renderHistory();
+  
+}
+// Skip if no DOM element 
+function renderHistory() {
+  if (!historyList) return;
+  
+  // Clear previous history display
+  historyList.innerHTML = "";
+  
+  // Render each history item as a div in the DOM
+  history.forEach(h => {
+    const el = document.createElement("div");
+    el.className = "history-item";
+    el.textContent = h;
+    historyList.appendChild(el);
+  });
+  
+}
+
+// -------------------------
+// Expression evaluation
+// -------------------------
+// Convert input string into array of tokens: numbers, operators, parentheses
+function tokenize(input) {
+  const tokens = [];
+  const re = /\s*(\d+(?:\.\d+)?|[()+\-*/^%])\s*/g;
+  let m;
+  while ((m = re.exec(input)) !== null) tokens.push(m[1]);
+  return tokens;
+}
+ 
+  // Operator precedence levels for Shunting Yard algorithm
+const precedence = { "+": 1, "-": 1, "*": 2, "/": 2, "%": 2, "^": 3 };
+// '^' operator is right-associative
+const rightAssoc = { "^": true };
+
+
+function toRPN(tokens) {
+  const out = [], stack = [];
+  for (let i = 0; i < tokens.length; i++) {
+    let t = tokens[i];
+
+    // Handle unary minus (negative numbers)
+    if (t === "-" && (i === 0 || tokens[i - 1] === "(" || /[+\-*/^%]/.test(tokens[i - 1]))) {
+      if (i + 1 < tokens.length && !isNaN(tokens[i + 1])) {
+        out.push((-parseFloat(tokens[i + 1])).toString());
+        i++;
+        continue;
       }
-      const val = evaluateExpression(expr); // calculate value
-      if (val === undefined || isNaN(val)) resultEl.textContent = "";
-      else resultEl.textContent = String(val); // show result
-    } catch {
-      resultEl.textContent = "";
+    }
+    // Numbers go directly to output
+    if (!isNaN(t)) out.push(t);
+    
+    // Push '(' onto stack
+    else if (t === "(") stack.push(t);
+    
+    // Pop operators until matching '('
+    else if (t === ")") {
+      while (stack.length && stack[stack.length - 1] !== "(") out.push(stack.pop());
+      stack.pop();
+    }
+    
+
+    else {
+      // Handle operators
+      while (stack.length) {
+        const top = stack[stack.length - 1];
+        if (top === "(") break;
+        const p1 = precedence[t] || 0, p2 = precedence[top] || 0;
+        if ((!rightAssoc[t] && p1 <= p2) || (rightAssoc[t] && p1 < p2)) out.push(stack.pop());
+        else break;
+      }
+      stack.push(t);
     }
   }
-
-  // -------------------------
-  // Add an item to history
-  // -------------------------
-  function pushHistory(item) {
-    history.unshift(item); // add to front
-    if (history.length > 20) history.pop(); // limit history
-    renderHistory(); // update history display
-  }
-
-  // -------------------------
-  // Render history on screen
-  // -------------------------
-  function renderHistory() {
-    historyList.innerHTML = "";
-    history.forEach((h) => {
-      const el = document.createElement("div");
-      el.className = "history-item";
-      el.textContent = h;
-      historyList.appendChild(el);
-    });
-  }
-
-  // -------------------------
-  // Split expression string into tokens
-  // -------------------------
-  function tokenize(input) {
-    const tokens = [];
-    const re = /\s*(\d+(?:\.\d+)?|[()+\-*/^%])\s*/g;
-    let m;
-    while ((m = re.exec(input)) !== null) tokens.push(m[1]);
-    return tokens;
-  }
-
-  // Operator precedence and right-associativity
-  const precedence = { "+": 1, "-": 1, "*": 2, "/": 2, "%": 2, "^": 3 };
-  const rightAssoc = { "^": true };
-
-  // -------------------------
-  // Convert tokens to Reverse Polish Notation (RPN)
-  // -------------------------
-  function toRPN(tokens) {
-    const out = [], stack = [];
-    for (let i = 0; i < tokens.length; i++) {
-      let t = tokens[i];
-
-      // Handle unary minus (negative numbers)
-      if (t === "-" && (i === 0 || tokens[i - 1] === "(" || /[+\-*/^%]/.test(tokens[i - 1]))) {
-        if (i + 1 < tokens.length && !isNaN(tokens[i + 1])) {
-          out.push((-parseFloat(tokens[i + 1])).toString()); // merge negative
-          i++; // skip next token
-          continue;
-        }
-      }
-
-      if (!isNaN(t)) out.push(t); // number
-      else if (t === "(") stack.push(t); // open parenthesis
-      else if (t === ")") { // close parenthesis
-        while (stack.length && stack[stack.length - 1] !== "(") out.push(stack.pop());
-        stack.pop(); // remove "("
-      } else { // operator
-        while (stack.length) {
-          const top = stack[stack.length - 1];
-          if (top === "(") break;
-          const p1 = precedence[t] || 0,
-            p2 = precedence[top] || 0;
-          if ((!rightAssoc[t] && p1 <= p2) || (rightAssoc[t] && p1 < p2)) out.push(stack.pop());
-          else break;
-        }
-        stack.push(t);
+  // Pop remaining operators
+  while (stack.length) out.push(stack.pop());
+  return out;
+}
+// Numbers pushed onto stack
+function evalRPN(rpn) {
+  const st = [];
+  rpn.forEach(tok => {
+    if (!isNaN(tok)) st.push(parseFloat(tok));
+    // Operators pop two operands and push result
+    else {
+      const b = st.pop(), a = st.pop();
+      if (a === undefined || b === undefined) throw new Error("Invalid operation");
+      switch (tok) {
+        case "+": st.push(a + b); break;
+        case "-": st.push(a - b); break;
+        case "*": st.push(a * b); break;
+        case "/": st.push(a / b); break;
+        case "%": st.push(a % b); break;
+        case "^": st.push(Math.pow(a, b)); break;
       }
     }
-    while (stack.length) out.push(stack.pop()); // flush remaining operators
-    return out;
-  }
+  });
+  return st.pop();
+}
+  
+// Main function to evaluate expression string
+function evaluateExpression(s) {
+  s = s.replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-");
 
-  // -------------------------
-  // Evaluate RPN array
-  // -------------------------
-  function evalRPN(rpn) {
-    const st = [];
-    rpn.forEach((tok) => {
-      if (!isNaN(tok)) st.push(parseFloat(tok)); // push number
-      else {
-        const b = st.pop(), a = st.pop(); // pop operands
-        if (a === undefined || b === undefined) throw new Error("Invalid operation");
-        switch (tok) {
-          case "+": st.push(a + b); break;
-          case "-": st.push(a - b); break;
-          case "*": st.push(a * b); break;
-          case "/": st.push(a / b); break;
-          case "%": st.push(a % b); break;
-          case "^": st.push(Math.pow(a, b)); break;
-        }
-      }
-    });
-    return st.pop(); // return final value
-  }
+  // Add implicit multiplication (e.g., 2(3) → 2*(3))
+  s = s.replace(/(\d)\s*\(/g, "$1*(").replace(/\)\s*(\d)/g, ")*$1");
 
-  // -------------------------
-  // Evaluate full expression string
-  // -------------------------
-  function evaluateExpression(s) {
-    s = s.replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-"); // normalize symbols
-    s = s.replace(/(\d)\s*\(/g, "$1*(").replace(/\)\s*(\d)/g, ")*$1"); // handle implicit multiplication
-    if (/[^0-9+\-*/().%^\s]/.test(s)) throw new Error("Invalid"); // invalid chars
-    const rpn = toRPN(tokenize(s));
-    const val = evalRPN(rpn);
-    return Math.round((val + Number.EPSILON) * 1e12) / 1e12; // round tiny floating errors
-  }
+  // Throw error if invalid characters
+  if (/[^0-9+\-*/().%^\s]/.test(s)) throw new Error("Invalid");
+  
+  // Evaluate string expression safely and round to 12 decimal places
+  const rpn = toRPN(tokenize(s));
+  const val = evalRPN(rpn);
+  return Math.round((val + Number.EPSILON) * 1e12) / 1e12;
+}
 
-  // -------------------------
-  // Add value to expression
-  // -------------------------
-  function appendValue(v) {
-    if (pendingNegative) {
-      expr += `-${v}`; // apply pending negative
-      pendingNegative = false;
-      updateDisplay();
-      return;
-    }
-
-    const lastChar = expr.slice(-1);
-
-    // Replace last operator if new one is pressed
-    if (/[+\-*/^%]/.test(v) && /[+\-*/^%]/.test(lastChar)) {
-      expr = expr.slice(0, -1) + v;
-      updateDisplay();
-      return;
-    }
-
-    // Handle decimal point
-    if (v === ".") {
-      const parts = expr.split(/[^0-9.]/);
-      const last = parts[parts.length - 1];
-      if (last.includes(".")) return; // prevent multiple dots
-      expr = expr === "" ? "0." : expr + v;
-    } else expr += v;
-
+// -------------------------
+// Append value
+// -------------------------
+// Handle pending negative number
+function appendValue(v) {
+  if (pendingNegative) {
+    expr += `-${v}`;
+    pendingNegative = false;
     updateDisplay();
+    return;
   }
+  // Replace last operator if a new operator is typed consecutively
+  const lastChar = expr.slice(-1);
 
-  // -------------------------
-  // Handle action buttons
-  // -------------------------
-  function handleAction(a) {
-    if (a === "clear") { // clear everything
+  if (/[+\-*/^%]/.test(v) && /[+\-*/^%]/.test(lastChar)) {
+    expr = expr.slice(0, -1) + v;
+    updateDisplay();
+    return;
+  }
+  // Prevent multiple decimals in a number
+  if (v === ".") {
+    const parts = expr.split(/[^0-9.]/);
+    const last = parts[parts.length - 1];
+    if (last.includes(".")) return;
+    expr = expr === "" ? "0." : expr + v;
+  } else expr += v;
+  
+  // Update display after appending
+  updateDisplay();
+}
+
+// -------------------------
+// Handle actions
+// -------------------------
+// Handles actions triggered by buttons like clear, back, parentheses, calculate, percent, sqrt, pow, inv, neg
+function handleAction(a) {
+  switch (a) {
+    case "clear":
       expr = "";
-      resultEl.textContent = "";
       history = [];
-      renderHistory();
       pendingNegative = false;
+      if (resultEl) resultEl.textContent = "";
+      renderHistory();
       updateDisplay();
-    } else if (a === "back") { // backspace
+      break;
+    case "back":
       expr = expr.slice(0, -1);
       updateDisplay();
-    } else if (a === "paren") { // add parentheses
+      break;
+    case "paren":
       const open = (expr.match(/\(/g) || []).length;
       const close = (expr.match(/\)/g) || []).length;
       const lastChar = expr.slice(-1);
-      if (expr === "" || /[+\-*/^%(\)]/.test(lastChar) || lastChar === "(") expr += "(";
+      if (expr === "" || /[+\-*/^%(\)]/.test(lastChar)) expr += "(";
       else if (open > close) expr += ")";
       else expr += "(";
       updateDisplay();
-    } else if (a === "calculate") { // calculate result
+      break;
+    case "calculate":
       try {
         if (!expr) return;
         const val = evaluateExpression(expr);
-        pushHistory(`${expr} = ${val}`); // save history
-        expr = String(val); // update display
-        resultEl.textContent = "";
+        pushHistory(`${expr} = ${val}`);
+        expr = String(val);
+        if (resultEl) resultEl.textContent = "";
+        if (expressionEl) expressionEl.textContent = expr;
         pendingNegative = false;
-        expressionEl.textContent = expr;
       } catch {
-        resultEl.textContent = "Error";
+        if (resultEl) resultEl.textContent = "Error";
       }
-    } else if (a === "percent") { // %
+      break;
+    case "percent":
       try {
         if (!expr || /[+\-*/^%]$/.test(expr)) return;
         expr = String(evaluateExpression(expr) / 100);
         updateDisplay();
       } catch {}
-    } else if (a === "sqrt") { // square root
+      break;
+    case "sqrt":
       try {
         const v = evaluateExpression(expr || "0");
         expr = String(Math.sqrt(v));
         updateDisplay();
       } catch {}
-    } else if (a === "pow") { // square (x^2)
+      break;
+    case "pow":
       try {
         const v = evaluateExpression(expr || "0");
         expr = String(v * v);
         updateDisplay();
       } catch {}
-    } else if (a === "inv") { // 1/x
+      break;
+    case "inv":
       try {
         const v = evaluateExpression(expr || "0");
         expr = String(1 / v);
         updateDisplay();
       } catch {}
-    } else if (a === "neg") { // ± button
-      pendingNegative = true; // mark next number negative
-    }
+      break;
+    case "neg":
+      pendingNegative = true;
+      break;
   }
-
-  // -------------------------
-  // Button click events
-  // -------------------------
-  document.querySelectorAll(".btn").forEach((btn) => {
+}
+// -------------------------
+// Event listeners (browser only)
+// -------------------------
+// Attach click listeners to all buttons. Use data-value or data-action attributes.
+if (typeof document !== "undefined") {
+  document.querySelectorAll(".btn").forEach(btn => {
     btn.addEventListener("click", () => {
       const v = btn.dataset.value;
       const a = btn.dataset.action;
-      if (v) appendValue(v); // number/operator
-      else if (a) handleAction(a); // action button
+      if (v) appendValue(v);
+      else if (a) handleAction(a);
     });
   });
+  // Memory plus button adds current value to memory
+  const memPlus = document.getElementById("memPlus");
+  if (memPlus) memPlus.addEventListener("click", () => { mem += evaluateExpression(expr || "0"); });
 
-  // -------------------------
-  // Memory buttons
-  // -------------------------
-  document.getElementById("memPlus").addEventListener("click", () => {
-    mem += evaluateExpression(expr || "0"); // M+
-  });
-  document.getElementById("memRecall").addEventListener("click", () => {
-    expr += String(mem); // MR
-    updateDisplay();
-  });
-  document.getElementById("memClear").addEventListener("click", () => {
-    mem = 0; // MC
-  });
-
-  // -------------------------
+  // Memory recall button appends memory to current expression
+  const memRecall = document.getElementById("memRecall");
+  if (memRecall) memRecall.addEventListener("click", () => { expr += String(mem); updateDisplay(); });
+  
+  // Memory clear button resets memory
+  const memClear = document.getElementById("memClear");
+  if (memClear) memClear.addEventListener("click", () => { mem = 0; });
+  
   // Copy result to clipboard
-  // -------------------------
-  document.getElementById("copyBtn").addEventListener("click", () => {
-    navigator.clipboard.writeText(resultEl.textContent);
-  });
-
-  // -------------------------
-  // Theme toggle
-  // -------------------------
+  const copyBtn = document.getElementById("copyBtn");
+  if (copyBtn) copyBtn.addEventListener("click", () => { navigator.clipboard.writeText(resultEl.textContent); });
+  
+  // Toggle light/dark theme
   const themeBtn = document.getElementById("themeBtn");
-  themeBtn.addEventListener("click", () => {
+  if (themeBtn) themeBtn.addEventListener("click", () => {
     document.documentElement.classList.toggle("light");
     const isLight = document.documentElement.classList.contains("light");
     themeBtn.textContent = isLight ? "Dark" : "Light";
     themeBtn.setAttribute("aria-pressed", isLight);
   });
-
-  // -------------------------
-  // Clear history button
-  // -------------------------
-  document.getElementById("clearHistory").addEventListener("click", () => {
-    history = [];
-    renderHistory();
-  });
-
-  // -------------------------
-  // Keyboard support
-  // -------------------------
+  // Clear history list
+  const clearHistoryBtn = document.getElementById("clearHistory");
+  if (clearHistoryBtn) clearHistoryBtn.addEventListener("click", () => { history = []; renderHistory(); });
+  
+  // Keyboard support for numbers, operators, decimal, enter, backspace, escape, parentheses
   window.addEventListener("keydown", (e) => {
     if (e.key >= "0" && e.key <= "9") appendValue(e.key);
     else if (["+", "-", "*", "/", "^", "%"].includes(e.key)) appendValue(e.key);
@@ -301,6 +344,16 @@
     else if (e.key === "Escape") handleAction("clear");
     else if (e.key === "(" || e.key === ")") appendValue(e.key);
   });
+  
+}
+// Initialize the display on load
+updateDisplay();
 
-  updateDisplay(); // initial display
-})();
+// -------------------------
+// Export for Jest
+// -------------------------
+// Export core functions for Jest testing  
+if (typeof module !== "undefined") {
+  module.exports = { evaluateExpression, appendValue, handleAction, history };
+}
+
