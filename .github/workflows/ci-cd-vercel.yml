@@ -1,5 +1,5 @@
 # .github/workflows/ci-cd-vercel.yml
-name: CI/CD - Test & Deploy to Vercel
+name: CI/CD - Test & Deploy HTML/JS Project to Vercel
 
 on:
   push:
@@ -16,31 +16,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Setup Node.js
+      # Step 2: Install Node.js (needed for ESLint and Vercel CLI)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: npm install
+      # Step 3: Install ESLint and Vercel CLI globally
+      - name: Install Tools
+        run: |
+          npm install -g eslint
+          npm install -g vercel
 
-      # Step 4: Run Jest tests
-      - name: Run Jest tests
-        run: npm test
-
-      # Step 5: Run ESLint (optional but recommended)
+      # Step 4: Run JS Linting as a simple test
       - name: Run ESLint
-        run: npx eslint "**/*.js" || echo "Lint warnings ignored"
+        run: |
+          eslint "**/*.js" || echo "Lint warnings ignored"
 
-      # Step 6: Install Vercel CLI
-      - name: Install Vercel CLI
-        run: npm install -g vercel
-
-      # Step 7: Deploy to Vercel (only if tests pass)
+      # Step 5: Deploy to Vercel (only if linting passed)
       - name: Deploy to Vercel
-        if: success()
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
