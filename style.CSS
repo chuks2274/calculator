@@ -313,3 +313,85 @@ footer {
     order:2; 
   }
 }
+
+
+/* ------------------------- */
+/* Calculator and Themes */
+/* ------------------------- */
+.calculator {
+  background-color: #1e1e1e;
+  color: #fff;
+  /* other calculator styles */
+}
+
+html.light .calculator {
+  background-color: #f5f5f5;
+  color: #111;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  color: #fff; /* light text for dark background */
+  background: transparent;
+  border: 1px solid currentColor;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+html.light .theme-toggle {
+  color: #111; /* dark text for light background */
+}
+
+/* ------------------------- */
+/* Modal Styles */
+/* ------------------------- */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  padding: 12px 20px;
+  background-color: #1e1e1e; /* default dark */
+  color: #fff; /* default dark */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+
+html.light .modal {
+  background-color: #f5f5f5;
+  color: #111;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* History list inside modal */
+.modal .history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  padding: 4px 0;
+}
+
+/* Optional semi-transparent backdrop */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.2);
+  z-index: 999;
+}

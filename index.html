@@ -74,16 +74,14 @@
 
       <!-- === Sidebar Section === -->
       <div class="side">
-        <div class="history" id="history" aria-live="polite">
-          <h4>History</h4>
-          <div class="history-list" id="historyList"></div>
-        </div>
+        <!-- History button -->
+        <button id="historyBtn" class="btn control">History</button>
 
-        <div style="display:flex;flex-direction:column;gap:8px;">
+        <!-- Memory buttons -->
+        <div style="display:flex;flex-direction:column;gap:8px; margin-top:10px;">
           <button id="memPlus" class="btn" data-action="memPlus">M+</button>
           <button id="memRecall" class="btn" data-action="memRecall">MR</button>
           <button id="memClear" class="btn" data-action="memClear">MC</button>
-          <button id="clearHistory" class="btn control" data-action="clearHistory">Clear History</button>
         </div>
       </div>
 
@@ -93,6 +91,21 @@
       </footer>
     </div>
   </div>
+
+  <!-- === History Modal === -->
+  <div id="historyModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>History</h4>
+        <button id="closeHistoryBtn" class="btn control">×</button>
+      </div>
+      <div id="historyList" class="history-list"></div>
+      <button id="clearHistory" class="btn control">Clear History</button>
+    </div>
+  </div>
+
+  <!-- Optional backdrop for modal -->
+  <div id="modalBackdrop" class="modal-backdrop" style="display:none;"></div>
 
   <!-- External JS -->
   <script src="script.js"></script>

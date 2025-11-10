@@ -1,0 +1,48 @@
+# .github/workflows/ci-cd-vercel.yml
+name: CI/CD - Test & Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-and-deploy:
+    name: Test & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run Jest tests
+      - name: Run Jest tests
+        run: npm test
+
+      # Step 5: Run ESLint (optional but recommended)
+      - name: Run ESLint
+        run: npx eslint "**/*.js" || echo "Lint warnings ignored"
+
+      # Step 6: Install Vercel CLI
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      # Step 7: Deploy to Vercel (only if tests pass)
+      - name: Deploy to Vercel
+        if: success()
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: vercel --prod --confirm --token=${{ secrets.VERCEL_TOKEN }}
