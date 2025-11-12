@@ -63,3 +63,23 @@ To clone and run the project locally:
 git clone https://github.com/chuks2274/calculator.git
 cd calculator
 npm install
+
+
+#  CI/CD Pipeline for HTML/JS Project (Vercel Deployment)
+
+This project uses **GitHub Actions** to automatically test (lint) and deploy the site to **Vercel** whenever changes are pushed to the `main` branch.
+
+##  Workflow Summary
+- **ESLint** checks JavaScript code quality.  
+- **Vercel CLI** deploys the latest version automatically.  
+- Runs on **Ubuntu + Node.js 20** environment.
+
+##  Required GitHub Secrets
+| Name | Description |
+|------|--------------|
+| `VERCEL_TOKEN` | Vercel authentication token |
+| `VERCEL_ORG_ID` | Your Vercel organization ID |
+| `VERCEL_PROJECT_ID` | Your Vercel project ID |
+
+## Live Deployment
+View the deployed project here: [**Live Demo**](https://calculator-blond-eta-27.vercel.app/)

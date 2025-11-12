@@ -1,352 +1,288 @@
 /* =========================================================
-    ROOT VARIABLES (Dark Mode)
+   ROOT VARIABLES (Dark Mode)
    ========================================================= */
 :root {
-  --bg:#0f1724;               /* Body background gradient start */
-  --panel:#0b1320;            /* Calculator panel background */
-  --accent:#06b6d4;           /* Highlight color for operators/equal button */
-  --muted:#94a3b8;            /* Muted text for labels and history */
-  --num:#e6eef6;              /* Main text color */
-  --glass: rgba(255,255,255,0.03); /* Glass-like transparent effect */
-  --radius:14px;              /* Standard border-radius */
-  --gap:12px;                 /* Standard spacing */
-  --btn-shadow: 0 6px 18px rgba(2,6,23,0.6); /* Button shadow */
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; /* Font stack */
+  --bg: #0f1724;
+  --panel: #0b1320;
+  --accent: #06b6d4;
+  --muted: #94a3b8;
+  --num: #e6eef6;
+  --glass: rgba(255,255,255,0.03);
+  --radius: 14px;
+  --gap: 12px;
+  --btn-shadow: 0 6px 18px rgba(2,6,23,0.6);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
 
 /* =========================================================
-    LIGHT MODE VARIABLES
+   LIGHT MODE VARIABLES
    ========================================================= */
 .light {
-  --bg:#f6f8fb; 
-  --panel:#ffffff; 
-  --accent:#0ea5a4; 
-  --muted:#475569; 
-  --num:#0b1220; 
-  --glass: rgba(2,6,23,0.03); 
+  --bg: #f6f8fb;
+  --panel: #ffffff;
+  --accent: #0ea5a4;
+  --muted: #475569;
+  --num: #0b1220;
+  --glass: rgba(2,6,23,0.03);
 }
 
 /* =========================================================
-    BASE ELEMENTS
+   BASE ELEMENTS
    ========================================================= */
-* { 
-  box-sizing:border-box; /* Include padding and border in element width/height */
+* {
+  box-sizing: border-box;
 }
 
-html,body {
-  height:100%; 
-  margin:0; 
-  background:linear-gradient(180deg,var(--bg), #081222); /* Gradient body background */
-  color:var(--num); /* Default text color */
+html, body {
+  height: 100%;
+  margin: 0;
+  background: linear-gradient(180deg, var(--bg), #081222);
+  color: var(--num);
 }
 
 /* =========================================================
-    BODY LAYOUT
+   BODY LAYOUT
    ========================================================= */
 body {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-bottom: 60px; /* Prevent footer overlap */
+  padding-bottom: 60px;
 }
 
 /* =========================================================
-    WRAPPER (.wrap)
+   WRAPPER (.wrap)
    ========================================================= */
-.wrap { 
-  min-height:100vh; 
-  display:flex; 
-  align-items:center; 
-  justify-content:center; 
-  padding:48px; 
+.wrap {
+  display: flex;
+  justify-content: flex-start; /* start from top on mobile */
+  align-items: center; /* horizontal centering */
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* Vertically center only on desktop */
+@media (min-width: 721px) {
+  .wrap {
+    justify-content: center;
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
 }
 
 /* =========================================================
-    MAIN CALCULATOR (.calculator)
+   MAIN CALCULATOR (.calculator)
    ========================================================= */
 .calculator {
-  width:420px; 
-  max-width:92vw;
-  background:linear-gradient(180deg,var(--panel), rgba(255,255,255,0.02));
-  border-radius:22px; 
-  padding:20px; 
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: linear-gradient(180deg, var(--panel), rgba(255,255,255,0.02));
+  border-radius: 22px;
+  padding: 20px;
   box-shadow: var(--btn-shadow);
-  display:grid; 
-  grid-template-columns: 1fr 120px; 
-  gap:16px;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+/* Push calculator down on mobile */
+@media (max-width: 600px) {
+  .calculator {
+    margin-top: 70px;
+  }
 }
 
 /* =========================================================
-    SCREEN (.screen)
+   SCREEN (.screen)
    ========================================================= */
 .screen {
-  grid-column:1 / -1; 
-  background:var(--glass); 
-  padding:18px; 
-  border-radius:14px;
-  display:flex; 
-  flex-direction:column; 
-  gap:8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 150px;
+  background: var(--glass);
+  padding: 18px;
+  border-radius: 14px;
   box-shadow: inset 0 -6px 20px rgba(2,6,23,0.25);
 }
 
-/* Screen header */
-.toprow { 
-  display:flex; 
-  align-items:center; 
-  justify-content:space-between; 
-  gap:12px; 
+.toprow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
 }
 
-/* Screen title */
-.title { 
-  font-weight:600; 
-  letter-spacing:0.2px; 
+.title {
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  font-size: 1rem;
 }
 
-/* Screen subtitle */
-.small { 
-  font-size:12px; 
-  color:var(--muted); 
+.small {
+  font-size: 0.875rem;
+  color: var(--muted);
 }
 
 /* =========================================================
-    DISPLAY (.display)
+   DISPLAY (.display)
    ========================================================= */
-.display { 
-  padding:6px 8px; 
-  border-radius:8px; 
-  display:flex; 
-  flex-direction:column; 
-  align-items:flex-end; 
+.display {
+  padding: 6px 8px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
-/* Expression input */
-.expression { 
-  color:var(--muted); 
-  font-size:15px; 
-  min-height:18px; 
-  word-break:break-all; 
+.expression {
+  color: var(--muted);
+  font-size: 15px;
+  min-height: 18px;
+  word-break: break-all;
 }
 
-/* Calculation result */
-.result { 
-  font-size:28px; 
-  font-weight:700; 
-  margin-top:6px; 
+.result {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 6px;
 }
 
 /* =========================================================
-    KEYPAD (.pad)
+   KEYPAD (.pad)
    ========================================================= */
-.pad { 
-  display:grid; 
-  grid-template-columns: repeat(4,1fr); 
-  gap:10px; 
-  margin-top:12px; 
+.pad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 12px;
 }
 
 /* =========================================================
-    BUTTONS (.btn)
+   BUTTONS (.btn)
    ========================================================= */
 .btn {
-  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border:none; 
-  padding:14px; 
-  border-radius:12px; 
-  font-size:16px; 
-  cursor:pointer;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
   box-shadow: 0 6px 14px rgba(2,6,23,0.45);
-  transition:transform .08s ease, box-shadow .08s;
-}
-
-/* Active state for buttons */
-.btn:active { 
-  transform:translateY(2px); 
-}
-
-/* Operator buttons (+, −, ×, ÷) */
-.btn.operator { 
-  background:linear-gradient(180deg, rgba(6,182,212,0.12), rgba(6,182,212,0.06)); 
-  color:var(--accent); 
-  font-weight:600;
-}
-
-/* Control buttons (AC, ⌫, %, √, x², 1/x, ±) */
-.btn.control { 
-  background:linear-gradient(180deg, rgba(255,65,108,0.06), rgba(255,65,108,0.02)); 
-  color:#ff6b81; 
-}
-
-/* Equals button (=) */
-.btn.equal { 
-  grid-column: span 2; 
-  background:linear-gradient(180deg,var(--accent), #0891b2); 
-  color: #042024; 
-  font-weight:700; 
-  font-size:18px; 
-}
-
-/* Light mode button text */
-:root.light .btn {
-  color: #222;
-}
-
-/* Dark mode button text */
-:root:not(.light) .btn {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  transition: transform 0.08s ease, box-shadow 0.08s;
   color: #fff;
 }
 
-/* Focus state */
-.btn:focus { 
-  outline:3px solid rgba(6,182,212,0.12); 
-  outline-offset:2px; 
+.btn:active {
+  transform: translateY(2px);
 }
 
-/* =========================================================
-    SIDEBAR (.side)
-   ========================================================= */
-.side { 
-  display:flex; 
-  flex-direction:column; 
-  gap:12px; 
-  align-items:stretch; 
+/* Operator buttons */
+.btn.operator {
+  background: linear-gradient(180deg, rgba(6,182,212,0.12), rgba(6,182,212,0.06));
+  color: var(--accent);
+  font-weight: 600;
 }
 
-/* History panel */
-.history { 
-  flex:1; 
-  background:rgba(255,255,255,0.02); 
-  padding:12px; 
-  border-radius:12px; 
-  overflow:auto; 
+/* Control buttons */
+.btn.control {
+  background: linear-gradient(180deg, rgba(255,65,108,0.06), rgba(255,65,108,0.02));
+  
 }
 
-/* History heading */
-.history h4 { 
-  margin:0 0 6px 0; 
-  font-size:13px; 
+/* Equals button */
+.btn.equal {
+  grid-column: span 2;
+  background: linear-gradient(180deg, var(--accent), #0891b2);
+  color: #042024;
+  font-weight: 700;
+  font-size: 18px;
 }
 
-/* History list container */
-.history-list { 
-  display:flex; 
-  flex-direction:column; 
-  gap:8px; 
-}
-
-/* Individual history item */
-.history-item { 
-  font-size:13px; 
-  color:var(--muted); 
-  padding:8px; 
-  border-radius:8px; 
-  background:transparent; 
-}
-
-/* =========================================================
-    CONTROLS (.controls, .theme-toggle)
-   ========================================================= */
-.controls { 
-  display:flex; 
-  gap:8px; 
-}
-
-.theme-toggle { 
-  background:transparent; 
-  border:1px solid rgba(255,255,255,0.06); 
-  padding:8px 10px; 
-  border-radius:10px; 
-  cursor:pointer; 
-}
-
-/* =========================================================
-    FOOTER
-   ========================================================= */
-   /*
-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: var(--bg-color); 
-  color: var(--text-color);
-  text-align: center;
-  padding: 12px 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s, color 0.3s;
-  font-size:12px; 
-}
-
-/* Light mode footer */
-.light footer {
-  background-color: #f2f2f2;
-  color: #000;
-}
-
-/* =========================================================
-    LIGHT / DARK BUTTON COLORS
-   ========================================================= */
-.btn {
-  color: #fff; /* dark mode default */
-  background-color: #333;
-}
-
+/* Light mode overrides */
 .light .btn {
   color: #000;
   background-color: #eee;
 }
 
+/* Focus state */
+.btn:focus {
+  outline: 3px solid rgba(6,182,212,0.12);
+  outline-offset: 2px;
+}
+
 /* =========================================================
-    RESPONSIVE DESIGN
-   Adjust layout for screens <= 720px
+   SIDEBAR (.side)
    ========================================================= */
-@media (max-width:720px) {
-  .calculator { 
-    grid-template-columns:1fr; 
-  }
-  .side { 
-    flex-direction:row; 
-    gap:8px; 
-  }
-  .history { 
-    order:2; 
-  }
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
 }
 
-
-/* ------------------------- */
-/* Calculator and Themes */
-/* ------------------------- */
-.calculator {
-  background-color: #1e1e1e;
-  color: #fff;
-  /* other calculator styles */
+.history {
+  flex: 1;
+  background: rgba(255,255,255,0.02);
+  padding: 12px;
+  border-radius: 12px;
+  overflow: auto;
 }
 
-html.light .calculator {
-  background-color: #f5f5f5;
-  color: #111;
+.history h4 {
+  margin: 0 0 6px 0;
+  font-size: 13px;
 }
 
-/* Theme toggle button */
-.theme-toggle {
-  color: #fff; /* light text for dark background */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-item {
+  font-size: 13px;
+  color: var(--muted);
+  padding: 8px;
+  border-radius: 8px;
   background: transparent;
-  border: 1px solid currentColor;
-  padding: 4px 8px;
-  border-radius: 4px;
+}
+
+/* =========================================================
+   CONTROLS (.controls, .theme-toggle)
+   ========================================================= */
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+.theme-toggle {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 8px 10px;
+  border-radius: 10px;
   cursor: pointer;
+  position: relative;
+  z-index: 10;
 }
 
-html.light .theme-toggle {
-  color: #111; /* dark text for light background */
+/* Light mode theme toggle */
+.light .theme-toggle {
+  color: #111;
+  border-color: rgba(0,0,0,0.2);
 }
 
-/* ------------------------- */
-/* Modal Styles */
-/* ------------------------- */
+/* =========================================================
+   MODAL
+   ========================================================= */
 .modal {
   position: fixed;
   top: 50%;
@@ -354,15 +290,15 @@ html.light .theme-toggle {
   transform: translate(-50%, -50%);
   width: 320px;
   padding: 12px 20px;
-  background-color: #1e1e1e; /* default dark */
-  color: #fff; /* default dark */
+  background-color: #1e1e1e;
+  color: #fff;
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 8px 25px rgba(0,0,0,0.3);
   z-index: 1000;
 }
 
-html.light .modal {
+.light .modal {
   background-color: #f5f5f5;
   color: #111;
 }
@@ -374,7 +310,6 @@ html.light .modal {
   margin-bottom: 8px;
 }
 
-/* History list inside modal */
 .modal .history-list {
   display: flex;
   flex-direction: column;
@@ -386,7 +321,6 @@ html.light .modal {
   padding: 4px 0;
 }
 
-/* Optional semi-transparent backdrop */
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -397,87 +331,26 @@ html.light .modal {
   z-index: 999;
 }
 
-
-
-
-
-/* --- Outer wrapper --- */
-.wrap {
-  display: flex;
-  justify-content: flex-start;   /* start from top on mobile */
-  align-items: center;           /* horizontal centering */
-  flex-direction: column;
-  width: 100%;
-  min-height: 100vh;
-  box-sizing: border-box;
-  padding: 1rem;
-  overflow-y: auto;              /* allow scrolling if content too tall */
-}
-
-/* Vertically center only on desktop */
-@media (min-width: 721px) {
-  .wrap {
-    justify-content: center;     /* vertical centering on desktop */
-    padding-top: 60px;           /* optional spacing from navbar */
-    padding-bottom: 60px;
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+@media (max-width: 720px) {
+  .side {
+    flex-direction: row;
+    gap: 8px;
+  }
+  .history {
+    order: 2;
   }
 }
 
-/* --- Calculator container --- */
-.calculator {
-  width: 100%;
-  max-width: 420px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  background: linear-gradient( rgba(255,255,255,0.02));
-  border-radius: 22px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  box-sizing: border-box;
-  margin: 0 auto;
-}
-
-/* --- Push calculator down on mobile --- */
-@media (max-width: 600px) {
-  .calculator {
-     margin-top: 70px; /* pushes down header + layout so top is visible */
-  }
-}
-
-/* --- Screen / Display --- */
-.screen {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  min-height: 150px;
-}
-
-.toprow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-}
-
-.title, .small {
-  font-size: 1rem;
-}
-
-.theme-toggle {
-  position: relative;
-  z-index: 10;
-}
-
-/* --- Mobile adjustments --- */
 @media (max-width: 600px) {
   .wrap {
-    padding: 1rem 1rem 2rem 1rem; /* extra bottom space for keypad */
+    padding: 1rem 1rem 2rem 1rem;
   }
 
   .theme-toggle {
     margin-top: 0.5rem;
-    width: 48%; /* two buttons side by side if enough width */
+    width: 48%;
   }
 }
