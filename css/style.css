@@ -400,31 +400,24 @@ html.light .modal {
 
 
 
-
 /* --- Outer wrapper --- */
 .wrap {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: center;   /* horizontal centering */
+  align-items: center;       /* vertical centering */
   flex-direction: column;
   width: 100%;
+  min-height: 100vh;         /* fill viewport height */
   box-sizing: border-box;
   padding: 1rem;
+  overflow-y: auto;           /* allow scrolling on short screens */
 }
 
-/* Center vertically on desktop */
+/* Add spacing below navbar on desktop */
 @media (min-width: 721px) {
   .wrap {
-    min-height: 100vh;
-    justify-content: center;
-    margin-top: 40px; /* spacing below navbar */
-  }
-}
-
-/* Push calculator further down on mobile */
-@media (max-width: 600px) {
-  .wrap {
-    padding-top: 200px; /* slightly more to fully show top-left corner */
+    padding-top: 60px;       /* spacing from navbar */
+    padding-bottom: 60px;
   }
 }
 
@@ -437,11 +430,10 @@ html.light .modal {
   gap: 16px;
   background: linear-gradient( rgba(255,255,255,0.02));
   border-radius: 22px;
-  padding: 30px 20px 20px 20px; /* extra top padding for mobile */
+  padding: 20px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   box-sizing: border-box;
-  margin: 0 auto; /* horizontal centering */
-  height: auto;
+  margin: 0 auto;
 }
 
 /* --- Screen / Display --- */
@@ -460,14 +452,23 @@ html.light .modal {
   gap: 0.25rem;
 }
 
+.title, .small {
+  font-size: 1rem;
+}
+
 .theme-toggle {
   position: relative;
   z-index: 10;
 }
 
+/* --- Mobile adjustments --- */
 @media (max-width: 600px) {
+  .wrap {
+    padding: 1rem 1rem 2rem 1rem; /* small extra bottom padding for keypad */
+  }
+
   .theme-toggle {
     margin-top: 0.5rem;
-    width: 48%;
+    width: 48%; /* buttons side by side */
   }
 }
