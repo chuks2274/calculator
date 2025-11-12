@@ -400,23 +400,25 @@ html.light .modal {
 
 
 
+
 /* --- Outer wrapper --- */
 .wrap {
   display: flex;
-  justify-content: center;   /* horizontal centering */
-  align-items: center;       /* vertical centering */
+  justify-content: flex-start;   /* start from top on mobile */
+  align-items: center;           /* horizontal centering */
   flex-direction: column;
   width: 100%;
-  min-height: 100vh;         /* fill viewport height */
+  min-height: 100vh;
   box-sizing: border-box;
   padding: 1rem;
-  overflow-y: auto;           /* allow scrolling on short screens */
+  overflow-y: auto;              /* scroll if content exceeds screen */
 }
 
-/* Add spacing below navbar on desktop */
+/* Vertically center only on desktop */
 @media (min-width: 721px) {
   .wrap {
-    padding-top: 60px;       /* spacing from navbar */
+    justify-content: center;     /* vertical centering on desktop */
+    padding-top: 60px;           /* optional spacing from navbar */
     padding-bottom: 60px;
   }
 }
@@ -464,11 +466,16 @@ html.light .modal {
 /* --- Mobile adjustments --- */
 @media (max-width: 600px) {
   .wrap {
-    padding: 1rem 1rem 2rem 1rem; /* small extra bottom padding for keypad */
+    justify-content: flex-start; /* ensure starts from top */
+    padding: 1rem 1rem 2rem 1rem; /* extra bottom padding for keypad */
   }
 
   .theme-toggle {
     margin-top: 0.5rem;
-    width: 48%; /* buttons side by side */
+    width: 48%;
+  }
+
+  .calculator {
+    padding-top: 25px; /* small extra top padding so header isn't cut */
   }
 }
