@@ -404,27 +404,27 @@ html.light .modal {
 .wrap {
   display: flex;
   justify-content: center;   /* horizontal centering */
-  align-items: flex-start;   /* natural flow */
+  align-items: flex-start;   /* flow naturally vertically */
   flex-direction: column;
   width: 100%;
-  padding: 1rem;
   box-sizing: border-box;
+  padding: 1rem;
   margin-top: 20px; /* small spacing from navbar on desktop */
 }
 
-/* Add more spacing on desktop (optional) */
+/* Center vertically on desktop */
 @media (min-width: 721px) {
   .wrap {
     min-height: 100vh;
-    justify-content: center;  /* vertical centering */
-    margin-top: 40px;         /* space below navbar */
+    justify-content: center;
+    margin-top: 40px; /* spacing below navbar */
   }
 }
 
-/* Push calculator further down on mobile */
+/* Push calculator down on mobile */
 @media (max-width: 600px) {
   .wrap {
-    padding-top: 120px; /* ensure header section fully visible */
+    padding-top: 180px; /* increase to fully show "Professional Calculator" */
     margin-top: 0;      /* reset desktop margin */
   }
 }
@@ -450,7 +450,7 @@ html.light .modal {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  min-height: 150px; /* ensure numbers are visible on mobile */
+  min-height: 150px; /* ensure numbers are visible */
 }
 
 .toprow {
