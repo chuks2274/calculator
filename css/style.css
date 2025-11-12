@@ -395,3 +395,65 @@ html.light .modal {
   background: rgba(0,0,0,0.2);
   z-index: 999;
 }
+
+
+
+/* Sidebar container */
+.side {
+  display: flex;
+  flex-direction: column; /* stack on mobile */
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Memory buttons container */
+.side > div {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* keep buttons aligned left */
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  /* Memory buttons have same fixed width */
+  .side > div button {
+    flex: none;           /* don't stretch */
+    width: 60px;          /* same width for all */
+  }
+
+  /* History button normal size */
+  #historyBtn {
+    flex: none;
+    width: 100%;
+    max-width: 120px;
+  }
+}
+
+
+
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.theme-toggle {
+  position: relative;
+  z-index: 10;
+}
+
+@media (max-width: 600px) {
+  .theme-toggle {
+    margin-top: 0.5rem;
+    width: 48%; /* two buttons sit nicely side by side or wrap */
+  }
+}
+
+.toprow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* allows buttons to move below title on small screens */
+}
