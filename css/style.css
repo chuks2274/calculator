@@ -411,7 +411,7 @@ html.light .modal {
   min-height: 100vh;
   box-sizing: border-box;
   padding: 1rem;
-  overflow-y: auto;              /* scroll if content exceeds screen */
+  overflow-y: auto;              /* allow scrolling if content too tall */
 }
 
 /* Vertically center only on desktop */
@@ -436,6 +436,13 @@ html.light .modal {
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   box-sizing: border-box;
   margin: 0 auto;
+}
+
+/* --- Push calculator down on mobile --- */
+@media (max-width: 600px) {
+  .calculator {
+    margin-top: 60px; /* pushes down header + layout so top is visible */
+  }
 }
 
 /* --- Screen / Display --- */
@@ -466,16 +473,11 @@ html.light .modal {
 /* --- Mobile adjustments --- */
 @media (max-width: 600px) {
   .wrap {
-    justify-content: flex-start; /* ensure starts from top */
-    padding: 1rem 1rem 2rem 1rem; /* extra bottom padding for keypad */
+    padding: 1rem 1rem 2rem 1rem; /* extra bottom space for keypad */
   }
 
   .theme-toggle {
     margin-top: 0.5rem;
-    width: 48%;
-  }
-
-  .calculator {
-    padding-top: 25px; /* small extra top padding so header isn't cut */
+    width: 48%; /* two buttons side by side if enough width */
   }
 }
