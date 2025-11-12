@@ -264,6 +264,7 @@ body {
 /* =========================================================
     FOOTER
    ========================================================= */
+   /*
 footer {
   position: fixed;
   bottom: 0;
@@ -398,185 +399,76 @@ html.light .modal {
 
 
 
-/* Sidebar container */
-.side {
-  display: flex;
-  flex-direction: column; /* stack on mobile */
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
 
-/* Memory buttons container */
-.side > div {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  justify-content: flex-start; /* keep buttons aligned left */
-}
-
-/* Mobile adjustments */
-@media (max-width: 600px) {
-  /* Memory buttons have same fixed width */
-  .side > div button {
-    flex: none;           /* don't stretch */
-    width: 60px;          /* same width for all */
-  }
-
-  /* History button normal size */
-  #historyBtn {
-    flex: none;
-    width: 100%;
-    max-width: 120px;
-  }
-}
-
-
-
-
-.screen {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.theme-toggle {
-  position: relative;
-  z-index: 10;
-}
-
-@media (max-width: 600px) {
-  .theme-toggle {
-    margin-top: 0.5rem;
-    width: 48%; /* two buttons sit nicely side by side or wrap */
-  }
-}
-
-.toprow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap; /* allows buttons to move below title on small screens */
-}
-
-
-
-
-
-
-
-
-
- /* --- Outer wrapper --- */
+/* --- Outer wrapper --- */
 .wrap {
   display: flex;
-  justify-content: center;   /* center horizontally */
-  align-items: flex-start;   /* flow naturally vertically on mobile */
-  flex-direction: column;    
+  justify-content: center;   /* horizontal centering */
+  align-items: flex-start;   /* natural flow */
+  flex-direction: column;
   width: 100%;
   padding: 1rem;
   box-sizing: border-box;
+  margin-top: 20px; /* small spacing from navbar on desktop */
 }
 
-/* Center vertically on desktop */
+/* Add more spacing on desktop (optional) */
 @media (min-width: 721px) {
   .wrap {
-    min-height: 100vh;       
+    min-height: 100vh;
     justify-content: center;  /* vertical centering */
+    margin-top: 40px;         /* space below navbar */
   }
 }
 
-/* --- Main calculator container --- */
+/* Push calculator further down on mobile */
+@media (max-width: 600px) {
+  .wrap {
+    padding-top: 120px; /* ensure header section fully visible */
+    margin-top: 0;      /* reset desktop margin */
+  }
+}
+
+/* --- Calculator container --- */
 .calculator {
   width: 100%;
-  max-width: 420px;           /* never exceed 420px */
-  display: grid;
-  grid-template-columns: 1fr 120px; /* screen + sidebar */
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
   gap: 16px;
-  background: linear-gradient(180deg, var(--panel), rgba(255,255,255,0.02));
+  background: linear-gradient( rgba(255,255,255,0.02));
   border-radius: 22px;
   padding: 20px;
-  box-shadow: var(--btn-shadow);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   box-sizing: border-box;
-  margin: 0 auto;             /* horizontal centering */
+  margin: 0 auto; /* horizontal centering */
   height: auto;
 }
 
-/* --- Screen / display area --- */
+/* --- Screen / Display --- */
 .screen {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  min-height: 120px; /* enough space for numbers on mobile */
+  min-height: 150px; /* ensure numbers are visible on mobile */
 }
 
-.title, .small {
-  font-size: 1rem; /* readable on mobile */
-}
-
-/* --- Toprow (title + header buttons) --- */
 .toprow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; /* wrap buttons below title if narrow */
+  flex-wrap: wrap; /* wrap buttons under title on small screens */
   gap: 0.25rem;
 }
 
-/* --- Sidebar / memory buttons --- */
-.side {
-  display: flex;
-  flex-direction: column; /* stack vertically by default */
-  gap: 0.5rem;
-}
-
-.side > div {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-/* Theme toggle buttons */
 .theme-toggle {
   position: relative;
   z-index: 10;
 }
 
-/* --- Keypad / Pad --- */
-.pad {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
-}
-
-/* --- Mobile adjustments --- */
-@media (max-width: 720px) {
-  .side {
-    flex-direction: column; /* stack buttons vertically */
-    gap: 0.5rem;
-  }
-}
-
 @media (max-width: 600px) {
-  .calculator {
-    display: grid;
-    grid-template-columns: 1fr; /* single column for mobile */
-    width: 100%;                
-    max-width: 100vw;
-    gap: 12px;
-    padding: 16px;
-  }
-
-  .side {
-    width: 100%;  /* sidebar stacks below keypad */
-  }
-
   .theme-toggle {
     margin-top: 0.5rem;
-    width: 48%; /* two buttons sit side by side or wrap */
-  }
-
-  footer {
-    font-size: 0.8rem;
-    padding: 0.5rem;
+    width: 48%; /* sit side by side or wrap */
   }
 }
