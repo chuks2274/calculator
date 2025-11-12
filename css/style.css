@@ -441,7 +441,7 @@ html.light .modal {
 /* --- Push calculator down on mobile --- */
 @media (max-width: 600px) {
   .calculator {
-    margin-top: env(safe-area-inset-top, 70px); /* pushes down header + layout so top is visible */
+     margin-top: 70px; /* pushes down header + layout so top is visible */
   }
 }
 
