@@ -400,16 +400,16 @@ html.light .modal {
 
 
 
+
 /* --- Outer wrapper --- */
 .wrap {
   display: flex;
-  justify-content: center;   /* horizontal centering */
-  align-items: flex-start;   /* flow naturally vertically */
+  justify-content: center;
+  align-items: flex-start;
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
   padding: 1rem;
-  margin-top: 20px; /* small spacing from navbar on desktop */
 }
 
 /* Center vertically on desktop */
@@ -421,11 +421,10 @@ html.light .modal {
   }
 }
 
-/* Push calculator down on mobile */
+/* Push calculator further down on mobile */
 @media (max-width: 600px) {
   .wrap {
-    padding-top: 180px; /* increase to fully show "Professional Calculator" */
-    margin-top: 0;      /* reset desktop margin */
+    padding-top: 200px; /* slightly more to fully show top-left corner */
   }
 }
 
@@ -438,7 +437,7 @@ html.light .modal {
   gap: 16px;
   background: linear-gradient( rgba(255,255,255,0.02));
   border-radius: 22px;
-  padding: 20px;
+  padding: 30px 20px 20px 20px; /* extra top padding for mobile */
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   box-sizing: border-box;
   margin: 0 auto; /* horizontal centering */
@@ -450,14 +449,14 @@ html.light .modal {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  min-height: 150px; /* ensure numbers are visible */
+  min-height: 150px;
 }
 
 .toprow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; /* wrap buttons under title on small screens */
+  flex-wrap: wrap;
   gap: 0.25rem;
 }
 
@@ -469,6 +468,6 @@ html.light .modal {
 @media (max-width: 600px) {
   .theme-toggle {
     margin-top: 0.5rem;
-    width: 48%; /* sit side by side or wrap */
+    width: 48%;
   }
 }
